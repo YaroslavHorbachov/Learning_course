@@ -31,10 +31,10 @@ function handlerInput(e) {
         // if(cleanVal.length < 2) return true;
         return cleanVal
             .filter(pair => pair.length)
-            .map(pair => pair.split(':').length === 2 && pair.split(':')[1].length > 0 )// array
+            .map(pair => pair.split(':').length === 2 && pair.split(':')[1].length > 0)// array
     }
 
-    errorFormatElement.innerText = getErrorFormat(value)[0] ?  '' : 'Some problem with parse format text';
+    errorFormatElement.innerText = getErrorFormat(value)[0] ? '' : 'Some problem with parse format text';
     fragment.appendChild(errorFormatElement);
 
     /* CLEAN OBJECT */
@@ -52,10 +52,10 @@ function handlerInput(e) {
             var resObj = {};
 
             cleanObject.concat()
-                .forEach(pair => preObj[pair[0]] = pair[1])
+                .forEach(pair => preObj[pair[0]] = pair[1]);
             var keys = Object.keys(preObj).map(item => item.replace(/\s/g, '')),
                 val = Object.values(preObj).map(item => item.replace(/\s/g, ''));
-            keys.forEach((item, idx) => resObj[item] = val[idx])
+            keys.forEach((item, idx) => resObj[item] = val[idx]);
             log(resObj);
             return resObj;
         }
@@ -67,12 +67,11 @@ function handlerInput(e) {
         var objFormatElement = create('div');
         (function getObjformatElement() {
             var pre = create('PRE');
-            var textObj = JSON.stringify(consoleObject())
+            var textObj = JSON.stringify(consoleObject());
             textObj = textObj.replace(/,/g, ',\n');
             textObj = textObj.replace(/{"/, '{\n"');
             textObj = textObj.replace(/"}/, '"\n}');
-            textObj = textObj.replace(/\n"/g, '\n\t"')
-            // textObj = textObj.replace(/"[A-Za-z]/, '--"')
+            textObj = textObj.replace(/\n"/g, '\n\t"');
             pre.innerText = textObj;
             objFormatElement.appendChild(pre);
         })();
@@ -84,7 +83,7 @@ function handlerInput(e) {
         var keysWithDashedElement = create('p');
 
         function getKeysWithDashed() {
-            log('In key');
+
             var outerStr = '';
             return Object.keys(consoleObject()).map(item => {
                 if (item.replace('-', '').length === item) {
@@ -112,6 +111,7 @@ function handlerInput(e) {
         var objectGreaterElement = create('p');
 
         function getObjectGreater() {
+            var resultStringOfGreater = '';
             var indexKeys = Object.values(consoleObject())
                 .map((chr, idx) => {
                     if (typeof +chr === 'number') {
@@ -119,13 +119,18 @@ function handlerInput(e) {
                             return idx
                         }
                     }
-                })
-            return indexKeys.map(idx => {
-                return Object.keys(consoleObject())[idx];
-            })
+                }).filter(idx => idx !== undefined);
+
+            if (indexKeys.length > 0) {
+                var keyOfObject = Object.keys(consoleObject());
+                indexKeys.forEach(idx => resultStringOfGreater += keyOfObject[idx].length);
+            } else {
+                resultStringOfGreater += ' No one'
+            }
+            return resultStringOfGreater
         }
 
-        objectGreaterElement.innerText = 'key greater then 100 , and length : ' + getObjectGreater().length;
+        objectGreaterElement.innerText = 'key greater then 100 , and length : ' + getObjectGreater();
 
         fragment.appendChild(objectGreaterElement);
 
@@ -141,11 +146,10 @@ function handlerInput(e) {
                         }
                     }
                 ).forEach((num, idx) => resObj[Object.keys(consoleObject())[idx]] = num);
-            log(resObj);
             return resObj;
         }
 
-        Multiply();
+        log('Multiply: ', Multiply());
 
         /* ALL SORTED VALUE */
 
@@ -155,16 +159,15 @@ function handlerInput(e) {
             Object.keys(jObj)
                 .sort()
                 .forEach(key => resObj[key] = jObj[key]);
-            log(resObj);
             return resObj;
         }
-        
+
+        log('Sorted: ', sortedByAlph());
 
         /* RANDOM VALUE */
         var randomField = create('p');
 
         function getRandomFiled() {
-            log('WARN', Math.ceil(Object.keys(consoleObject()).length * Math.random()))
             return Object.values(consoleObject())[Math.ceil((Object.keys(consoleObject()).length - 1) * Math.random())]
         }
 
@@ -178,12 +181,11 @@ function handlerInput(e) {
         function getLastModify() {
             var date = new Date();
             return date.getFullYear() + '-' + (date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth()) + '-' + (date.getDay() < 10 ? '0' + date.getDay() : date.getDay())
-        };
+        }
+
         lastModifyElement.innerText = 'Last modify : ' + getLastModify();
         fragment.appendChild(lastModifyElement);
-
-
-        result.appendChild(fragment);
-        log(value);
     }
+    /* APPEND  FRAGMENT*/
+    result.appendChild(fragment);
 }
